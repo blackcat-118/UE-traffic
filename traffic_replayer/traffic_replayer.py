@@ -71,7 +71,7 @@ class TrafficReplayer:
 
                 payload = bytes(random.getrandbits(8) for _ in range(size))
                 try:
-                    # self.sock.sendto(payload, (self.destination, 9000))
+                    self.sock.sendto(payload, (self.destination, 9000))
                     print(f"[SEND] {size} bytes from {iface} to {self.destination}")
                 except Exception as e:
                     print(f"[ERROR] Failed to send from {iface} to {self.destination}: {e}")
