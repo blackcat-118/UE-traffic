@@ -6,8 +6,16 @@ from config_parser import parse_config
 from ue_generator import generate_ue_profiles
 from simulator import Simulator
 
+import argparse
+
+# === Argument parsing ===
+parser = argparse.ArgumentParser(description="")
+parser.add_argument("--config_path", type=str, help="Path to the configuration file containing simulation info.")
+
+args = parser.parse_args()
+
 # === Load parsed config ===
-cfg = parse_config()
+cfg = parse_config(path=args.config_path)
 ue_profiles = generate_ue_profiles(cfg.profiles)
 
 # === Create Simulator instance ===

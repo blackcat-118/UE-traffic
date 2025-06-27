@@ -1,0 +1,739 @@
+simulation:
+  record_csv_path: log/packet_records.csv
+  duration_sec: 3600
+  display_interval_sec: 600
+  packet_type: replay # ping, udp, tcp
+  target_ips:
+    - 192.168.1.222
+
+ue:
+  profiles:
+    # - name: datasets/afreeca5g_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/afreeca5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/afreecaWiFi_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/afreecaWiFi2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/afreecaWiFi3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_5_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_6_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_7_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_8_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/BattleGround_9_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/bg5g1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/bg5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/bg5g3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/bg5g4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g5_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g6_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g7_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g8_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g9_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/gamebox5g10_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_5_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_6_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_7_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_8_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Geforce_9_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/meet5g_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/meet5g_re_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/meetwifi_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/naver5g_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/naver5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/naver5g3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/naver5g4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/netflix5g_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Roblox_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/teams5g_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/teams5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g5_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g6_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g7_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g8_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/tft5g9_per_second.csv
+      # ue_count: 1
+      # packet_arrival_rate: 1
+      # packet_size: 
+      #   distribution: replay
+      #   min: 0
+      #   max: 0
+      # burst:
+        # enable: false
+    - name: datasets/Youtube_DL_V1_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/Youtube_UL_V1_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/Youtube_V1_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/youtubeLive_wifi_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/youtubeLive_wifi2_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    # - name: datasets/youtubeLive_wifi3_per_second.csv
+    #   ue_count: 10
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/youtubelive1_per_second.csv
+    #   ue_count: 10
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    - name: datasets/youtubelive2_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/youtubelive3_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/youtubelive4_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    - name: datasets/youtubelive5_per_second.csv
+      ue_count: 10
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false
+    # - name: datasets/zepeto5g1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g3_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g4_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g5_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g6_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g7_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g8_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g9_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zepeto5g10_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zoom5g_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zoom5g2_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/zoom5g3_per_second.csv
+      ue_count: 1
+      packet_arrival_rate: 1
+      packet_size: 
+        distribution: replay
+        min: 0
+        max: 0
+      burst:
+        enable: false

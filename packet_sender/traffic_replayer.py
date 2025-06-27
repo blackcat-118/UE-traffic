@@ -4,19 +4,18 @@ from datetime import datetime
 import time
 import random
 import os
+from typing import Optional
 
 class TrafficReplayer:
-    def __init__(self, csv_path: str, num_of_ue: int, destination: str, statistics_only: bool = True):
-        
-        df = pd.read_csv(csv_path)
-        if statistics_only:
-            # 只保留統計資訊，不需要實際的流量重播
-            df.drop(columns=["No.", "Source", "Destination", "Protocol", "Info"], inplace=True, errors='ignore')
-        
-        self.df = df
-        self.num_of_ue = num_of_ue
-        self.destination = destination
+    def __init__(self, iface: str):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.iface = iface
+        try:
+            self.sock.setsockopt(socket.SOL_SOCKET, 25, iface.encode())
+        except PermissionError:
+            print(f"[WARN] Need root to bind socket to interface {iface}")
+        except OSError as e:
+            print(f"[ERROR] Cannot bind to {iface}: {e}")
 
     
     def _parse_time(self, s: str) -> float:
@@ -41,12 +40,13 @@ class TrafficReplayer:
         cuts = sorted(random.sample(range(1, total), parts - 1))
         return [a - b for a, b in zip(cuts + [total], [0] + cuts)]
 
-    def replay(self):
+    def replay(self, csv_path: str, num_of_ue: int, destination: str):
         """
         重播流量
+        從 CSV 檔案讀取流量資料，並將其分配給多個 UE
         """
 
-        result = self.get_packet_size_per_second()
+        result = self.get_packet_size_per_second(csv_path=csv_path)
         print("Packet size per second:")
         print(result)
 
@@ -55,7 +55,7 @@ class TrafficReplayer:
             total_bytes = int(row["TotalBytes"])
 
             # 隨機分配 total_bytes 給 num_of_ue 個 UE
-            splits = self._random_split(total_bytes, self.num_of_ue)
+            splits = self._random_split(total_bytes, num_of_ue)
 
             # 傳送給每個 UE 對應的 interface
             for i, size in enumerate(splits, start=0):
@@ -79,23 +79,39 @@ class TrafficReplayer:
             time.sleep(1)  # 模擬每秒發送
 
 
-    def get_packet_size_per_second(self) -> pd.DataFrame:
+    def get_packet_size_per_second(self, csv_path: str) -> pd.DataFrame:
         """
         計算每秒的封包大小總和
         回傳 DataFrame: second, total_bytes
         """
+        df = pd.read_csv(csv_path)
 
-        print(self.df.head(3))
-        if self.df["Time"].dtype != float:
-            self.df["Time"] = self.df["Time"].apply(self._parse_time)
+        # if statistics_only:
+        #     # 只保留統計資訊，不需要實際的流量重播
+        #     df.drop(columns=["No.", "Source", "Destination", "Protocol", "Info"], inplace=True, errors='ignore')
 
-        self.df["Second"] = self.df["Time"].astype(int)
-        print(self.df.head(30))
+        print(df.head(3))
+        if df["Time"].dtype != float:
+            df["Time"] = df["Time"].apply(self._parse_time)
 
-        result = self.df.groupby("Second")["Length"].sum().reset_index()
+        df["Second"] = df["Time"].astype(int)
+        print(df.head(30))
+
+        result = df.groupby("Second")["Length"].sum().reset_index()
         result.rename(columns={"Length": "TotalBytes"}, inplace=True)
 
         return result
+    
+    def send_packet(self, *, target_ip: str, payload_size: int, target_port: Optional[int] = None):
+        """
+        Call by external simulator to send packets.
+        """
+        try:
+            payload = bytes(random.getrandbits(8) for _ in range(payload_size))
+            self.sock.sendto(payload, (target_ip, target_port))
+            print(f"[{self.iface}] Sent {payload_size} bytes to {target_ip}:{target_port}")
+        except Exception as e:
+            print(f"[{self.iface}] UDP send failed: {e}")
 
 if __name__ == "__main__":
     """
@@ -109,5 +125,5 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    replayer = TrafficReplayer(args.csv_path, num_of_ue=30, destination="192.168.1.222")
-    replayer.replay()
+    replayer = TrafficReplayer()
+    replayer.replay(args.csv_path, num_of_ue=30, destination="192.168.1.222")

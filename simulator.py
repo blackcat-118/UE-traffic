@@ -14,6 +14,8 @@ from recorder import Recorder
 import random
 import time
 
+MAX_UDP_SIZE = 65507 # Maximum size for UDP payload (65535 - 8 bytes for UDP header - 20 bytes for IP header)
+
 class PoissonWaitGenerator:
     def __init__(self, 
                  arrival_rate, 
@@ -94,7 +96,7 @@ class Simulator:
             arrival_rate=ue.packet_arrival_rate,
             burst_config=ue.burst
         )
-        
+        timestep = 0
         while True:
             wait = waiting_timer.next_wait()
             time.sleep(wait)
@@ -104,22 +106,27 @@ class Simulator:
             target_ip = random.choice(self.target_ips)
             if ue.packet_size.distribution == "uniform":
                 payload_size = random.randint(ue.packet_size.min, ue.packet_size.max)
+            elif ue.packet_size.distribution == "replay":
+                payload_size = ue.packet_size.series[timestep % len(ue.packet_size.series)]
             else:
                 print(f"[ERROR] Unsupported packet size distribution: {ue.packet_size.distribution}")
-                return
-
-            print(f"[{iface}] Sending {self.packet_type} to {target_ip} with size {payload_size} bytes.")
-            packet_sender.send_packet(
-                target_ip=target_ip,
-                payload_size=payload_size,
-                target_port=9000  # 可為 None TODO: 應該從config 讀取
-            )
+                
+            for offset in range(0, payload_size, MAX_UDP_SIZE):  # 65535 is the max size for UDP packets
+                chunk_size = min(MAX_UDP_SIZE, payload_size - offset)
+                print(f"[{iface}] Sending {self.packet_type} to {target_ip} with size {chunk_size} bytes (offset {offset}).")
+                packet_sender.send_packet(
+                    target_ip=target_ip,
+                    payload_size=chunk_size,
+                    target_port=9000  # 可為 None TODO: 應該從config 讀取
+                )
+                
             self.recorder.record_packet(
                 ue.id,
                 iface,
                 payload_size,
             )
             self.recorder.increment_ue_packet_cnt(ue.id)
+            timestep += 1
 
     def validate_ue_profiles(self):
         for ue in self.ue_profiles:

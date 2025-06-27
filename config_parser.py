@@ -22,7 +22,6 @@ class Burst:
     burst_on_duration: Optional[BurstRange] = None
     burst_off_duration: Optional[BurstRange] = None
 
-
 @dataclass
 class ProfileConfig:
     name: str
@@ -30,7 +29,6 @@ class ProfileConfig:
     packet_arrival_rate: float
     packet_size: PacketSize
     burst: Burst
-
 
 @dataclass
 class SimulationConfig:
@@ -44,6 +42,7 @@ class SimulationConfig:
 class ParsedConfig:
     simulation: SimulationConfig
     profiles: List[ProfileConfig]
+
 
 def parse_config(path: str = "config/config.yaml") -> ParsedConfig:
     with open(path) as f:
