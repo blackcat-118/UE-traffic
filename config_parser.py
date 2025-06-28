@@ -35,6 +35,7 @@ class SimulationConfig:
     record_csv_path: str
     duration_sec: int
     display_interval_sec: int
+    ue_arrival_rate: float
     packet_type: str
     target_ips: List[str]
 
@@ -53,6 +54,7 @@ def parse_config(path: str = "config/config.yaml") -> ParsedConfig:
         record_csv_path=sim["record_csv_path"],
         duration_sec=sim["duration_sec"],
         display_interval_sec=sim["display_interval_sec"],
+        ue_arrival_rate=sim["poisson_arrival_rate"],
         packet_type=sim["packet_type"],
         target_ips=sim["target_ips"]
     )

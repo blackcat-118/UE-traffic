@@ -16,7 +16,7 @@ args = parser.parse_args()
 
 # === Load parsed config ===
 cfg = parse_config(path=args.config_path)
-ue_profiles = generate_ue_profiles(cfg.profiles)
+ue_profiles = generate_ue_profiles(cfg.profiles, cfg.simulation.ue_arrival_rate)
 
 # === Create Simulator instance ===
 sim = Simulator(

@@ -3,6 +3,7 @@ import time
 import threading
 import random
 import os
+import subprocess
 from dataclasses import dataclass
 
 from config_parser import ParsedConfig, Burst
@@ -84,7 +85,25 @@ class Simulator:
         self.recorder = Recorder(self.lock, self.ue_profiles, cfg.simulation.record_csv_path)
         self.display = Display(self.recorder, self.lock, cfg.simulation.display_interval_sec)
  
-    def simulate_ue(self, ue: UEProfile):
+    def simulate_ue(self, ue: UEProfile, registration: bool = False):
+        # UE arrival time handling
+        time_to_wait = ue.start_time
+        if time_to_wait > 0:
+            time.sleep(time_to_wait)  # 等待直到 UE 的開始時間
+        
+        # Do registration if needed
+        if registration:
+            print(f"[{ue.id}] Registering UE...")
+            proc = subprocess.Popen(
+                ["/ueransim/nr-ue", 
+                 "-c", "/ueransim/config/ue-config.yaml", 
+                 "-i", f"imsi-20893{(ue.id+1):010d}"],
+            )
+            time.sleep(10)  # 等待註冊完成，這裡假設註冊需要 10 秒
+
+        if not self.validate_ue_profile(ue):
+            return
+
         iface = f"uesimtun{ue.id}"
         if ue.packet_arrival_rate <= 0:
             print(f'[INFO] UE {ue.id} has a packet arrival rate of 0. Skipping simulation.')
@@ -128,6 +147,13 @@ class Simulator:
             self.recorder.increment_ue_packet_cnt(ue.id)
             timestep += 1
 
+    def validate_ue_profile(self, ue: UEProfile):
+        iface = f"uesimtun{ue.id}"
+        if not os.path.exists(f"/sys/class/net/{iface}"):
+            print(f"[ERROR] Interface '{iface}' does not exist. UE {ue.id} cannot be simulated. --> Exit!!!! ")
+            return False
+        return True
+    
     def validate_ue_profiles(self):
         for ue in self.ue_profiles:
             iface = f"uesimtun{ue.id}"
@@ -146,11 +172,11 @@ class Simulator:
         return monitor_thread
     
     def run(self) -> bool:
-        if not self.validate_ue_profiles():
-            return False
+        # if not self.validate_ue_profiles():
+        #     return False
         
         for ue in self.ue_profiles:
-            t = threading.Thread(target=self.simulate_ue, args=(ue,))
+            t = threading.Thread(target=self.simulate_ue, args=(ue,True))
             self.threads.append(t)
             t.start()
         

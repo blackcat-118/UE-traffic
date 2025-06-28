@@ -2,6 +2,7 @@ simulation:
   record_csv_path: log/packet_records.csv
   duration_sec: 3600
   display_interval_sec: 600
+  poisson_arrival_rate: 1  # set to 0 for no Poisson arrival
   packet_type: replay # ping, udp, tcp
   target_ips:
     - 192.168.1.222

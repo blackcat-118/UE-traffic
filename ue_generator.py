@@ -27,10 +27,11 @@ class UEProfile:
     packet_arrival_rate: float
     packet_size: PacketSize
     burst: Burst
+    start_time: float = 0.0  # Start time for the UE, can be set later
 
-def generate_ue_profiles(profiles: List[ProfileConfig]) -> List[UEProfile]:
+def generate_ue_profiles(profiles: List[ProfileConfig], ue_arrival_rate: float = 0.0) -> List[UEProfile]:
     ue_profiles = []
-    ue_id = 0
+    ue_id = 1
     for profile in profiles:
        # switch
         if profile.name == "high_traffic":
@@ -45,6 +46,8 @@ def generate_ue_profiles(profiles: List[ProfileConfig]) -> List[UEProfile]:
             traffic_class = TrafficClass.NONE
 
 
+        # Create UE profiles based on the profile configuration
+        current_time = 0.0
         for i in range(profile.ue_count):
             if traffic_class == TrafficClass.REPLAY:
                 # For replay traffic, we assume the packet size is a series of sizes from a CSV file
@@ -61,10 +64,14 @@ def generate_ue_profiles(profiles: List[ProfileConfig]) -> List[UEProfile]:
                     max=profile.packet_size.max,
                     distribution=profile.packet_size.distribution
                 )
+
+            inter_arrival = random.expovariate(ue_arrival_rate) if ue_arrival_rate > 0 else 0.0
+            current_time += inter_arrival
             ue_profile = UEProfile(
                 id=ue_id,
                 profile_name=profile.name,
                 traffic_class=traffic_class,
+                start_time=current_time,
                 packet_arrival_rate=profile.packet_arrival_rate,
                 packet_size=packet_size,
                 burst=profile.burst
