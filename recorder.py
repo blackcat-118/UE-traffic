@@ -54,7 +54,6 @@ class Recorder:
         with self.lock:
             self.ue_packet_cnt[ue_id] += 1
             self.ue_latency_ms[ue_id] = []
-        print(f"[INFO] Incrementing packet count for UE {ue_id}. -> {self.ue_packet_cnt[ue_id] + 1}")
 
     def record_packet(
         self,

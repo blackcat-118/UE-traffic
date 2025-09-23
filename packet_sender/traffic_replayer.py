@@ -90,12 +90,10 @@ class TrafficReplayer:
         #     # 只保留統計資訊，不需要實際的流量重播
         #     df.drop(columns=["No.", "Source", "Destination", "Protocol", "Info"], inplace=True, errors='ignore')
 
-        print(df.head(3))
         if df["Time"].dtype != float:
             df["Time"] = df["Time"].apply(self._parse_time)
 
         df["Second"] = df["Time"].astype(int)
-        print(df.head(30))
 
         result = df.groupby("Second")["Length"].sum().reset_index()
         result.rename(columns={"Length": "TotalBytes"}, inplace=True)
@@ -109,7 +107,7 @@ class TrafficReplayer:
         try:
             payload = bytes(random.getrandbits(8) for _ in range(payload_size))
             self.sock.sendto(payload, (target_ip, target_port))
-            print(f"[{self.iface}] Sent {payload_size} bytes to {target_ip}:{target_port}")
+            # print(f"[{self.iface}] Sent {payload_size} bytes to {target_ip}:{target_port}")
         except Exception as e:
             print(f"[{self.iface}] UDP send failed: {e}")
 
