@@ -7,15 +7,34 @@ import os
 from typing import Optional
 
 class TrafficReplayer:
-    def __init__(self, iface: str):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    def __init__(self, iface: str, destination_ip: str = "", destination_port = 9000, connection_type: str = "udp"):
+        self.destination_ip = destination_ip
+        self.destination_port = destination_port
+        self.connection_type = connection_type.lower()
         self.iface = iface
+        self.sock = None
+        self._bind_interface()
+
+    def _bind_interface(self):
+        """
+        嘗試綁定介面（Linux only, root required）
+        """
+        if self.connection_type == "udp":
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        elif self.connection_type == "tcp": 
+            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        else:
+            raise ValueError(f"Unsupported connection type: {self.connection_type}")
+        
         try:
-            self.sock.setsockopt(socket.SOL_SOCKET, 25, iface.encode())
+            self.sock.setsockopt(socket.SOL_SOCKET, 25, self.iface.encode())
+            if self.connection_type == "tcp":
+                self.sock.connect((self.destination_ip, self.destination_port))
+                self.sock.settimeout(10)
         except PermissionError:
-            print(f"[WARN] Need root to bind socket to interface {iface}")
+            print(f"[WARN] Need root to bind socket to interface {self.iface}")
         except OSError as e:
-            print(f"[ERROR] Cannot bind to {iface}: {e}")
+            print(f"[ERROR] Cannot bind to {self.iface}: {e}")
 
     
     def _parse_time(self, s: str) -> float:
@@ -40,7 +59,7 @@ class TrafficReplayer:
         cuts = sorted(random.sample(range(1, total), parts - 1))
         return [a - b for a, b in zip(cuts + [total], [0] + cuts)]
 
-    def replay(self, csv_path: str, num_of_ue: int, destination: str):
+    def replay(self, csv_path: str, num_of_ue: int):
         """
         重播流量
         從 CSV 檔案讀取流量資料，並將其分配給多個 UE
@@ -71,10 +90,10 @@ class TrafficReplayer:
 
                 payload = bytes(random.getrandbits(8) for _ in range(size))
                 try:
-                    self.sock.sendto(payload, (self.destination, 9000))
-                    print(f"[SEND] {size} bytes from {iface} to {self.destination}")
+                    self.sock.sendto(payload, (self.destination_ip, self.destination_port))
+                    print(f"[SEND] {size} bytes from {iface} to {self.destination_ip}")
                 except Exception as e:
-                    print(f"[ERROR] Failed to send from {iface} to {self.destination}: {e}")
+                    print(f"[ERROR] Failed to send from {iface} to {self.destination_ip}: {e}")
 
             time.sleep(1)  # 模擬每秒發送
 
@@ -86,10 +105,6 @@ class TrafficReplayer:
         """
         df = pd.read_csv(csv_path)
 
-        # if statistics_only:
-        #     # 只保留統計資訊，不需要實際的流量重播
-        #     df.drop(columns=["No.", "Source", "Destination", "Protocol", "Info"], inplace=True, errors='ignore')
-
         if df["Time"].dtype != float:
             df["Time"] = df["Time"].apply(self._parse_time)
 
@@ -100,16 +115,27 @@ class TrafficReplayer:
 
         return result
     
-    def send_packet(self, *, target_ip: str, payload_size: int, target_port: Optional[int] = None):
+    def send_packet(self, *, payload_size: int):
         """
         Call by external simulator to send packets.
         """
         try:
             payload = bytes(random.getrandbits(8) for _ in range(payload_size))
-            self.sock.sendto(payload, (target_ip, target_port))
+            if self.connection_type == "tcp":
+                self.sock.send(payload)
+                print(f"[{self.iface}] Sent {payload_size} bytes to {self.destination_ip}:{self.destination_port}")
+                indata = self.sock.recv(1024000)
+            elif self.connection_type == "udp":
+                self.sock.sendto(payload, (self.destination_ip, self.destination_port))
+                indata = self.sock.recvfrom(1024000)
             # print(f"[{self.iface}] Sent {payload_size} bytes to {target_ip}:{target_port}")
         except Exception as e:
             print(f"[{self.iface}] UDP send failed: {e}")
+            self.sock.close()
+            time.sleep(40)  # wait for the pdu session to be re-established 
+            self._bind_interface()
+            
+
 
 if __name__ == "__main__":
     """
@@ -124,4 +150,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     replayer = TrafficReplayer()
-    replayer.replay(args.csv_path, num_of_ue=30, destination="192.168.1.222")
+    replayer.replay(args.csv_path, num_of_ue=30)

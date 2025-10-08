@@ -1,11 +1,11 @@
 simulation:
   record_csv_path: log/packet_records.csv
-  duration_sec: 3600
+  duration_sec: 5400  # 3 hours
   display_interval_sec: 600
-  poisson_arrival_rate: 1  # set to 0 for no Poisson arrival
+  poisson_arrival_rate: 0.5  # set to 0 for no Poisson arrival
   packet_type: replay # ping, udp, tcp
-  target_ips:
-    - 192.168.1.222
+  target_ip: 192.168.1.222
+  target_port: 9000
 
 ue:
   profiles:
@@ -514,59 +514,59 @@ ue:
     #   burst:
     #     enable: false
     # - name: datasets/tft5g9_per_second.csv
-      # ue_count: 1
-      # packet_arrival_rate: 1
-      # packet_size: 
-      #   distribution: replay
-      #   min: 0
-      #   max: 0
-      # burst:
-        # enable: false
-    - name: datasets/Youtube_DL_V1_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
-    - name: datasets/Youtube_UL_V1_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
-    - name: datasets/Youtube_V1_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
-    - name: datasets/youtubeLive_wifi_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
-    - name: datasets/youtubeLive_wifi2_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Youtube_DL_V1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Youtube_UL_V1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/Youtube_V1_per_second.csv
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/youtubeLive_wifi_per_second.csv
+    #   ue_count: 10
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/youtubeLive_wifi2_per_second.csv
+    #   ue_count: 10
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
     # - name: datasets/youtubeLive_wifi3_per_second.csv
     #   ue_count: 10
     #   packet_arrival_rate: 1
@@ -585,17 +585,17 @@ ue:
     #     max: 0
     #   burst:
     #     enable: false
-    - name: datasets/youtubelive2_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
+    # - name: datasets/youtubelive2_per_second.csv
+    #   ue_count: 200
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
     - name: datasets/youtubelive3_per_second.csv
-      ue_count: 10
+      ue_count: 15
       packet_arrival_rate: 1
       packet_size: 
         distribution: replay
@@ -603,24 +603,24 @@ ue:
         max: 0
       burst:
         enable: false
-    - name: datasets/youtubelive4_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
-    - name: datasets/youtubelive5_per_second.csv
-      ue_count: 10
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
+    # - name: datasets/youtubelive4_per_second.csv
+    #   ue_count: 10
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
+    # - name: datasets/youtubelive5_per_second.csv
+    #   ue_count: 75
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false
     # - name: datasets/zepeto5g1_per_second.csv
     #   ue_count: 1
     #   packet_arrival_rate: 1
@@ -694,7 +694,7 @@ ue:
     #   burst:
     #     enable: false
     # - name: datasets/zepeto5g9_per_second.csv
-    #   ue_count: 1
+    #   ue_count: 20
     #   packet_arrival_rate: 1
     #   packet_size: 
     #     distribution: replay
@@ -730,11 +730,11 @@ ue:
     #   burst:
     #     enable: false
     # - name: datasets/zoom5g3_per_second.csv
-      ue_count: 1
-      packet_arrival_rate: 1
-      packet_size: 
-        distribution: replay
-        min: 0
-        max: 0
-      burst:
-        enable: false
+    #   ue_count: 1
+    #   packet_arrival_rate: 1
+    #   packet_size: 
+    #     distribution: replay
+    #     min: 0
+    #     max: 0
+    #   burst:
+    #     enable: false

@@ -78,7 +78,8 @@ class Simulator:
 
         self.ue_profiles = ue_profiles
         self.duration = cfg.simulation.duration_sec
-        self.target_ips = cfg.simulation.target_ips
+        self.target_ip = cfg.simulation.target_ip
+        self.target_port = cfg.simulation.target_port
         self.packet_type = cfg.simulation.packet_type
         self.start_time = time.time()
         self.end_time = self.start_time + self.duration
@@ -99,10 +100,17 @@ class Simulator:
                  "-c", "/ueransim/config/ue-config.yaml", 
                  "-i", f"imsi-20893{(ue.id+1):010d}"],
             )
-            time.sleep(10)  # 等待註冊完成，這裡假設註冊需要 10 秒
+            time.sleep(15)  # 等待註冊完成，這裡假設註冊需要 10 秒
 
-        if not self.validate_ue_profile(ue):
-            return
+        count = 0
+        while count < 5:
+            if self.validate_ue_profile(ue):
+                break
+            time.sleep(10)
+            count += 1
+            if count == 5:
+                print(f"[ERROR] UE {ue.id} failed to validate profile after 5 attempts. Exiting simulation for this UE.")
+                return
 
         iface = f"uesimtun{ue.id}"
         if ue.packet_arrival_rate <= 0:
@@ -110,7 +118,7 @@ class Simulator:
             return
 
         # Get the packet sender based on the packet type and interface, ex: "pingSender", "tcpSender", "udpSender"
-        packet_sender = get_packet_sender(self.packet_type, iface)
+        packet_sender = get_packet_sender(self.packet_type, iface, self.target_ip, self.target_port, "tcp")
         waiting_timer = PoissonWaitGenerator(
             arrival_rate=ue.packet_arrival_rate,
             burst_config=ue.burst
@@ -125,22 +133,25 @@ class Simulator:
             if time.time() > self.end_time: # 必須將判定放在 wait 之後，否則超過模擬時間依然會跑最後一次發送封包 
                 break
 
-            target_ip = random.choice(self.target_ips)
             if ue.packet_size.distribution == "uniform":
                 payload_size = random.randint(ue.packet_size.min, ue.packet_size.max)
             elif ue.packet_size.distribution == "replay":
                 payload_size = ue.packet_size.series[timestep % len(ue.packet_size.series)]
             else:
                 print(f"[ERROR] Unsupported packet size distribution: {ue.packet_size.distribution}")
-                
-            for offset in range(0, payload_size, MAX_UDP_SIZE):  # 65535 is the max size for UDP packets
-                chunk_size = min(MAX_UDP_SIZE, payload_size - offset)
-                # print(f"[{iface}] Sending {self.packet_type} to {target_ip} with size {chunk_size} bytes (offset {offset}).")
-                packet_sender.send_packet(
-                    target_ip=target_ip,
-                    payload_size=chunk_size,
-                    target_port=9000  # 可為 None TODO: 應該從config 讀取
-                )
+            print(f"[{iface}] Sending {self.packet_type} to {self.target_ip} in time step {timestep}.")
+            packet_sender.send_packet(
+                payload_size=payload_size,
+            )
+            # If payload_size exceeds MAX_UDP_SIZE, split it into multiple packets
+            # for offset in range(0, payload_size, MAX_UDP_SIZE):  # 65535 is the max size for UDP packets
+            #     chunk_size = min(MAX_UDP_SIZE, payload_size - offset)
+            #     # print(f"[{iface}] Sending {self.packet_type} to {target_ip} with size {chunk_size} bytes (offset {offset}).")
+            #     packet_sender.send_packet(
+            #         target_ip=target_ip,
+            #         payload_size=chunk_size,
+            #         target_port=9000  # 可為 None TODO: 應該從config 讀取
+            #     )
                 
             self.recorder.record_packet(
                 ue.id,

@@ -37,7 +37,8 @@ class SimulationConfig:
     display_interval_sec: int
     ue_arrival_rate: float
     packet_type: str
-    target_ips: List[str]
+    target_ip: str
+    target_port: int
 
 @dataclass
 class ParsedConfig:
@@ -56,7 +57,8 @@ def parse_config(path: str = "config/config.yaml") -> ParsedConfig:
         display_interval_sec=sim["display_interval_sec"],
         ue_arrival_rate=sim["poisson_arrival_rate"],
         packet_type=sim["packet_type"],
-        target_ips=sim["target_ips"]
+        target_ip=sim["target_ip"],
+        target_port=sim["target_port"]
     )
 
     profiles = []
@@ -104,7 +106,7 @@ if __name__ == "__main__":
     print(f"  Duration (sec): {config.simulation.duration_sec}")
     print(f"  Display Interval (sec): {config.simulation.display_interval_sec}")
     print(f"  Packet Type: {config.simulation.packet_type}")
-    print(f"  Target IPs: [{'],   ['.join(config.simulation.target_ips)}]")
+    print(f"  Target IPs: [{'],   ['.join(config.simulation.target_ip)}]")
     
     print("User Profiles:")
     for profile in config.profiles:
