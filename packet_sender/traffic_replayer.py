@@ -32,9 +32,9 @@ class TrafficReplayer:
                 self.sock.connect((self.destination_ip, self.destination_port))
                 self.sock.settimeout(10)
         except PermissionError:
-            print(f"[WARN] Need root to bind socket to interface {self.iface}")
+            raise PermissionError(f"[WARN] Need root to bind socket to interface {self.iface}")
         except OSError as e:
-            print(f"[ERROR] Cannot bind to {self.iface}: {e}")
+            raise OSError(f"[ERROR] Cannot bind to {self.iface}: {e}")
 
     
     def _parse_time(self, s: str) -> float:
@@ -59,45 +59,6 @@ class TrafficReplayer:
         cuts = sorted(random.sample(range(1, total), parts - 1))
         return [a - b for a, b in zip(cuts + [total], [0] + cuts)]
 
-    def replay(self, csv_path: str, num_of_ue: int):
-        """
-        重播流量
-        從 CSV 檔案讀取流量資料，並將其分配給多個 UE
-        """
-
-        result = self.get_packet_size_per_second(csv_path=csv_path)
-        print("Packet size per second:")
-        print(result)
-
-        for _, row in result.iterrows():
-            second = row["Second"]
-            total_bytes = int(row["TotalBytes"])
-
-            # 隨機分配 total_bytes 給 num_of_ue 個 UE
-            splits = self._random_split(total_bytes, num_of_ue)
-
-            # 傳送給每個 UE 對應的 interface
-            for i, size in enumerate(splits, start=0):
-                iface = f"uesimtun{i}"
-
-                # 嘗試綁定 interface（Linux only, root required）
-                try:
-                    self.sock.setsockopt(socket.SOL_SOCKET, 25, iface.encode())
-                except PermissionError:
-                    print(f"[WARN] Need root to bind socket to interface {iface}")
-                except OSError as e:
-                    print(f"[ERROR] Cannot bind to {iface}: {e}")
-
-                payload = bytes(random.getrandbits(8) for _ in range(size))
-                try:
-                    self.sock.sendto(payload, (self.destination_ip, self.destination_port))
-                    print(f"[SEND] {size} bytes from {iface} to {self.destination_ip}")
-                except Exception as e:
-                    print(f"[ERROR] Failed to send from {iface} to {self.destination_ip}: {e}")
-
-            time.sleep(1)  # 模擬每秒發送
-
-
     def get_packet_size_per_second(self, csv_path: str) -> pd.DataFrame:
         """
         計算每秒的封包大小總和
@@ -114,6 +75,12 @@ class TrafficReplayer:
         result.rename(columns={"Length": "TotalBytes"}, inplace=True)
 
         return result
+    
+    def done(self):
+        if self.sock:
+            self.sock.close()
+            self.sock = None
+        print(f"[{self.iface}] Closed socket.")
     
     def send_packet(self, *, payload_size: int):
         """
@@ -132,10 +99,13 @@ class TrafficReplayer:
         except Exception as e:
             print(f"[{self.iface}] UDP send failed: {e}")
             self.sock.close()
-            time.sleep(40)  # wait for the pdu session to be re-established 
-            self._bind_interface()
-            
-
+            for i in range(40):
+                time.sleep(1)
+                try:
+                    self._bind_interface()
+                    break
+                except Exception as e:
+                    print(f"[{self.iface}] Re-bind interface failed: {e}")
 
 if __name__ == "__main__":
     """

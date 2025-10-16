@@ -128,7 +128,11 @@ class Simulator:
             if timestep == len(ue.packet_size.series):
                 timestep = 0
                 time.sleep(180)  # 如果是 replay 模式，且已經播完一輪，則休息 3 min再繼續
-            wait = waiting_timer.next_wait()
+            if timestep >= ue.duration:
+                packet_sender.done()
+                break # 如果已經達到 UE 的模擬時間，則結束
+
+            wait = waiting_timer.next_wait()  # actually 1 second
             time.sleep(wait)
             if time.time() > self.end_time: # 必須將判定放在 wait 之後，否則超過模擬時間依然會跑最後一次發送封包 
                 break
@@ -143,15 +147,6 @@ class Simulator:
             packet_sender.send_packet(
                 payload_size=payload_size,
             )
-            # If payload_size exceeds MAX_UDP_SIZE, split it into multiple packets
-            # for offset in range(0, payload_size, MAX_UDP_SIZE):  # 65535 is the max size for UDP packets
-            #     chunk_size = min(MAX_UDP_SIZE, payload_size - offset)
-            #     # print(f"[{iface}] Sending {self.packet_type} to {target_ip} with size {chunk_size} bytes (offset {offset}).")
-            #     packet_sender.send_packet(
-            #         target_ip=target_ip,
-            #         payload_size=chunk_size,
-            #         target_port=9000  # 可為 None TODO: 應該從config 讀取
-            #     )
                 
             self.recorder.record_packet(
                 ue.id,
