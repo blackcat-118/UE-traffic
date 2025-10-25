@@ -85,8 +85,20 @@ class Simulator:
         self.end_time = self.start_time + self.duration
         self.recorder = Recorder(self.lock, self.ue_profiles, cfg.simulation.record_csv_path)
         self.display = Display(self.recorder, self.lock, cfg.simulation.display_interval_sec)
- 
+
     def simulate_ue(self, ue: UEProfile, registration: bool = False):
+
+        def end_simulation(packet_sender):
+            packet_sender.done()
+            time.sleep(1)
+            subprocess.Popen(  # 結束 UE 模擬介面
+                ["/ueransim/nr-cli", 
+                 f"imsi-20893{(ue.id):010d}",
+                 "--exec", "deregister disable-5g"
+                ],
+            )
+            print(f"[{ue.id}] UE simulation forcefully ended.")
+
         # UE arrival time handling
         time_to_wait = ue.start_time
         if time_to_wait > 0:
@@ -97,8 +109,8 @@ class Simulator:
             print(f"[{ue.id}] Registering UE...")
             proc = subprocess.Popen(
                 ["/ueransim/nr-ue", 
-                 "-c", "/ueransim/config/ue-config.yaml", 
-                 "-i", f"imsi-20893{(ue.id+1):010d}"],
+                 "-c", f"/ueransim/UE-traffic/config/ue-config{ue.id}.yaml"]
+                #  "-i", f"imsi-20893{(ue.id):010d}"],
             )
             time.sleep(15)  # 等待註冊完成，這裡假設註冊需要 10 秒
 
@@ -112,7 +124,7 @@ class Simulator:
                 print(f"[ERROR] UE {ue.id} failed to validate profile after 5 attempts. Exiting simulation for this UE.")
                 return
 
-        iface = f"uesimtun{ue.id}"
+        iface = f"uesimtun{ue.id}0"  # Adjusted for UERANSIM interface naming convention
         if ue.packet_arrival_rate <= 0:
             print(f'[INFO] UE {ue.id} has a packet arrival rate of 0. Skipping simulation.')
             return
@@ -130,11 +142,13 @@ class Simulator:
                 time.sleep(180)  # 如果是 replay 模式，且已經播完一輪，則休息 3 min再繼續
             if timestep >= ue.duration:
                 packet_sender.done()
+                end_simulation(packet_sender)
                 break # 如果已經達到 UE 的模擬時間，則結束
 
             wait = waiting_timer.next_wait()  # actually 1 second
             time.sleep(wait)
-            if time.time() > self.end_time: # 必須將判定放在 wait 之後，否則超過模擬時間依然會跑最後一次發送封包 
+            if time.time() > self.end_time: # 必須將判定放在 wait 之後，否則超過模擬時間依然會跑最後一次發送封包
+                end_simulation(packet_sender)
                 break
 
             if ue.packet_size.distribution == "uniform":
@@ -157,7 +171,7 @@ class Simulator:
             timestep += 1
 
     def validate_ue_profile(self, ue: UEProfile):
-        iface = f"uesimtun{ue.id}"
+        iface = f"uesimtun{ue.id}0"
         if not os.path.exists(f"/sys/class/net/{iface}"):
             print(f"[ERROR] Interface '{iface}' does not exist. UE {ue.id} cannot be simulated. --> Exit!!!! ")
             return False

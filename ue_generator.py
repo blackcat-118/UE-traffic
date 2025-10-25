@@ -31,7 +31,7 @@ class UEProfile:
     start_time: float = 0.0  # Start time for the UE, can be set later
     duration: float = 0.0  # Duration for which the UE is active, can be set later
 
-def generate_service_times(num_users: int, sim_duration: float, tail_prob: float = 0.01):
+def generate_service_times(num_users: int, sim_duration: float, tail_prob: float = 0.1):
     """
     Generate exponential service times for 'num_users' users.
     
@@ -78,7 +78,7 @@ def generate_arrival_intervals(num_users: int, arrival_lambda: float):
 
 def generate_ue_profiles(profiles: List[ProfileConfig], ue_arrival_rate: float = 0.0, sim_duration: int = 600) -> List[UEProfile]:
     ue_profiles = []
-    ue_id = 1
+    ue_id = 1 # Start UE IDs from 1
     for profile in profiles:
        # switch
         if profile.name == "high_traffic":
